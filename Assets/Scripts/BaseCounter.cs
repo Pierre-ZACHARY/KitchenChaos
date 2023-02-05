@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public abstract class BaseCounter : MonoBehaviour, IKitchenObjectParent
@@ -7,10 +8,18 @@ public abstract class BaseCounter : MonoBehaviour, IKitchenObjectParent
     private KitchenObject _kitchenObject;
     public abstract void Interact(Player player);
 
+    public virtual void InteractAlternative(Player player){}
+
     public KitchenObject GetKitchenObject()
     {
-        return _kitchenObject;
+        return _kitchenObject; 
     }
+
+    private void OnEnable()
+    {
+        if(_kitchenObject) _kitchenObject.SetParent(this);
+    }
+    
 
     public void SetKitchenObject(KitchenObject kitchenObject)
     {

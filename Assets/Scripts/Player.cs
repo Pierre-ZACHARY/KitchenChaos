@@ -7,13 +7,30 @@ using UnityEngine.Serialization;
 [RequireComponent(typeof(Transform))]
 public class Player : MonoBehaviour, IKitchenObjectParent
 {
+    [ClearOnReload]
+    private static Player _instance;
+    public static event EventHandler OnInstanceChange;
+    [ExecuteOnReload]
+    private static void CleanUpEvents() 
+    {
+        OnInstanceChange = null;
+    }
     //Singleton
-    public static Player Instance { get; private set; }
+    public static Player Instance
+    {
+        get => _instance;
+        private set
+        {
+            _instance = value;
+            OnInstanceChange?.Invoke(_instance, EventArgs.Empty);
+        }
+    }
 
     void Awake()
     {
         Instance = this;
     }
+    
 
     public class OnLastSelectedCounterChangeArgs : EventArgs
     {
@@ -34,10 +51,24 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         lastSelectedCounter = counter;
         OnLastSelectedCounterChange?.Invoke(this, new OnLastSelectedCounterChangeArgs() { selectedCounter = counter });
     }
-
-    void Start()
+    
+    void OnEnable()
     {
+        Instance = this;
         gameInput.OnInteractAction += GameInput_OnInteractAction;
+        gameInput.OnInteractAlternativeAction += GameInput_OnInteractAlternativeAction;
+    }
+
+    void OnDisable()
+    {
+        gameInput.OnInteractAction -= GameInput_OnInteractAction;
+        gameInput.OnInteractAlternativeAction -= GameInput_OnInteractAlternativeAction;
+    }
+
+    private void GameInput_OnInteractAlternativeAction(object sender, EventArgs e)
+    {
+        Debug.Log("Interact Alternative : " + lastSelectedCounter);
+        lastSelectedCounter?.InteractAlternative(this);
     }
 
     private void GameInput_OnInteractAction(object sender, EventArgs e)
@@ -78,11 +109,11 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void HandleMovement(Vector3 mooveDirection)
     {
-        transform.forward = Vector3.Slerp(transform.forward, mooveDirection, Time.deltaTime * mooveSpeed);
+        var transform1 = transform;
+        transform.forward = Vector3.Slerp(transform1.forward, mooveDirection, Time.deltaTime * mooveSpeed);
 
         float playerHeight = 2f;
         float playerSize = 0.5f;
-        var transform1 = transform;
         var position = transform1.position;
         bool canMove = !Physics.CapsuleCast(position, position + Vector3.up * playerHeight, playerSize, mooveDirection,
             Time.deltaTime * mooveSpeed);
@@ -90,20 +121,20 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         {
             // Attempt to moove only on the X axis
             Vector3 moveDirX = new Vector3(mooveDirection.x, 0, 0).normalized;
-            canMove = moveDirX!=Vector3.zero && !Physics.CapsuleCast(position, position + Vector3.up * playerHeight, playerSize, moveDirX,
+            canMove = moveDirX.x != 0 &&!Physics.CapsuleCast(position, position + Vector3.up * playerHeight, playerSize, moveDirX,
                 Time.deltaTime * mooveSpeed);
             if (canMove) mooveDirection = moveDirX;
             else
             {
                 // Attempt to moove only on the Z axis
                 Vector3 moveDirZ = new Vector3(0, 0, mooveDirection.z).normalized;
-                canMove = moveDirZ!=Vector3.zero && !Physics.CapsuleCast(position, position + Vector3.up * playerHeight, playerSize, moveDirZ,
+                canMove = moveDirZ.z != 0 && !Physics.CapsuleCast(position, position + Vector3.up * playerHeight, playerSize, moveDirZ,
                     Time.deltaTime * mooveSpeed);
                 if (canMove) mooveDirection = moveDirZ;
             }
         }
-
-        transform.position += mooveDirection * (Time.deltaTime * mooveSpeed);
+        
+        if(canMove) transform.position += mooveDirection * (Time.deltaTime * mooveSpeed);
     }
 
     public bool IsWalking()

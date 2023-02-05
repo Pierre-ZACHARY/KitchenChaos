@@ -6,14 +6,35 @@ using UnityEngine.InputSystem;
 
 public class GameInput : MonoBehaviour
 {
-    private PlayerInputActions _playerInputActions;
+    private PlayerInputActionsClass _playerInputActions;
     public event EventHandler OnInteractAction;
+    public event EventHandler OnInteractAlternativeAction;
 
     private void Awake()
     {
-        _playerInputActions = new PlayerInputActions();
-        _playerInputActions.Player.Enable();
-        _playerInputActions.Player.Interact.performed += Interact_performed;
+        Init();
+    }
+
+    private void OnEnable()
+    {
+        Init();
+    }
+    
+    private void Init() 
+    {
+        Debug.Log("GameInput.Init : "+_playerInputActions);  
+        if (_playerInputActions == null)
+        {
+            _playerInputActions = new PlayerInputActionsClass();
+            _playerInputActions.Player.Enable();
+            _playerInputActions.Player.Interact.performed += Interact_performed;
+            _playerInputActions.Player.InteractAlternative.performed += InteractAlternative_performed; 
+        }
+    }
+
+    private void InteractAlternative_performed(InputAction.CallbackContext obj)
+    {
+        OnInteractAlternativeAction?.Invoke(this, EventArgs.Empty);
     }
 
     private void Interact_performed(InputAction.CallbackContext obj)

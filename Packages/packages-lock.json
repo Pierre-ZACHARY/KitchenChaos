@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.jsteinhauer.unitydomainreloadhelper": {
+      "version": "https://github.com/joshcamas/unity-domain-reload-helper.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "dac958f055605a1d876f7076e7daed00630e0201"
+    },
     "com.unity.burst": {
       "version": "1.8.2",
       "depth": 1,
