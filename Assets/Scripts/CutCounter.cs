@@ -2,22 +2,22 @@ using System;
 using JetBrains.Annotations;
 using UnityEngine;
 
-public class CutCounter: BaseCounter
+public class CutCounter: BaseCounter, IHasProgress
 {
-    public class CutAmountEventArgs
-    {
-        public int CutAmount;
-        public int CutAmountMax; 
-    }
+    public event EventHandler<IHasProgress.OnProgressChangeEventArgs> OnProgressChange;
+    
 
     [SerializeField] private SO_KitchenObjectRecipes[] recipes;
-    public event EventHandler<CutAmountEventArgs> OnCutAmountChange;
-    public event EventHandler OnCut; 
+    public event EventHandler OnCut;  
 
     private int _cutAmount;
     public void SetCutAmount(int cutAmount) 
     {
-        OnCutAmountChange?.Invoke(this, new CutAmountEventArgs() {CutAmount = cutAmount, CutAmountMax = GetRecipeFromInput(GetKitchenObject())?.cutAmountMax ?? 0});
+        
+        OnProgressChange?.Invoke(this, new IHasProgress.OnProgressChangeEventArgs
+        {
+            normalized_progress = HasRecipe(GetKitchenObject()) ? (float) cutAmount / GetRecipeFromInput(GetKitchenObject())!.cutAmountMax : 0.0f
+        });
         _cutAmount = cutAmount;
     }
     public override void Interact(Player player)
@@ -95,5 +95,5 @@ public class CutCounter: BaseCounter
     {
         return GetRecipeFromInput(input) != null;
     }
-    
+
 }
