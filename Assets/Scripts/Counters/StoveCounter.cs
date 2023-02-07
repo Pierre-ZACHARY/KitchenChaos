@@ -100,7 +100,24 @@ public class StoveCounter : BaseCounter, IHasProgress
                 GetKitchenObject().SetParent(player);
             }
             else
-                Debug.Log("Player already has a kitchen object!");
+            {
+                
+                if (player.GetKitchenObject() is PlateKitchenObject)
+                {
+                    PlateKitchenObject plate = (PlateKitchenObject)player.GetKitchenObject();
+                    if (plate.AddObjectOnPlate(GetKitchenObject()))
+                    {
+                        // Object correctly added on plate
+                        SetState(State.Idle);
+                        GetKitchenObject().SelfDestroy();
+                    }
+                    else
+                        Debug.Log("This object is not part of the recipe!");
+                }
+                else
+                    Debug.Log("Player already has a kitchen object!");
+                
+            }
         }
         else
         {

@@ -27,7 +27,7 @@ public class KitchenObject : MonoBehaviour
         return _parent;
     }
 
-    public void SelfDestroy()
+    public virtual void SelfDestroy()
     {
         this._parent.ClearKitchenObject();
         Destroy(gameObject);
