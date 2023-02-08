@@ -67,12 +67,14 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void GameInput_OnInteractAlternativeAction(object sender, EventArgs e)
     {
+        if(GameManager.Instance.CurrentState != GameManager.State.Playing) return;
         Debug.Log("Interact Alternative : " + lastSelectedCounter);
         lastSelectedCounter?.InteractAlternative(this);
     }
 
     private void GameInput_OnInteractAction(object sender, EventArgs e)
     {
+        if(GameManager.Instance.CurrentState != GameManager.State.Playing) return;
         Debug.Log("Interact : " + lastSelectedCounter);
         lastSelectedCounter?.Interact(this);
     }
@@ -151,10 +153,13 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     {
         return _kitchenObject;
     }
+    
+    public event EventHandler OnPickupKitchenObject;
 
     public void SetKitchenObject(KitchenObject kitchenObject)
     {
        _kitchenObject = kitchenObject;
+       if(kitchenObject != null) OnPickupKitchenObject?.Invoke(this, EventArgs.Empty);
     }
 
     public bool HasKitchenObject()

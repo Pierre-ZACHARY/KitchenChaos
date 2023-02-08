@@ -9,6 +9,7 @@ public class CutCounter: BaseCounter, IHasProgress
 
     [SerializeField] private SO_KitchenObjectRecipes[] recipes;
     public event EventHandler OnCut;  
+    public static event EventHandler OnAnyCut;  
 
     private int _cutAmount;
     public void SetCutAmount(int cutAmount) 
@@ -74,6 +75,7 @@ public class CutCounter: BaseCounter, IHasProgress
         {
             SetCutAmount(_cutAmount + 1);
             OnCut?.Invoke(this, EventArgs.Empty);
+            OnAnyCut?.Invoke(this, EventArgs.Empty);
             Debug.Log(GetKitchenObject()); 
             Debug.Log(GetRecipeFromInput(GetKitchenObject()));
             Debug.Log(_cutAmount >= GetRecipeFromInput(GetKitchenObject())!.cutAmountMax);

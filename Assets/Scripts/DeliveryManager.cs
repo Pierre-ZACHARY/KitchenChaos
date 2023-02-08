@@ -51,6 +51,7 @@ public class DeliveryManager: MonoBehaviour
     private List<SO_DeliveryRecipe> _currentRecipes = new List<SO_DeliveryRecipe>();
     public event EventHandler<OnRecipesChangedEventArgs> OnRecipesChanged;
     public event EventHandler<OnRecipeDeliveredEventArgs> OnRecipeDelivered; 
+    public event EventHandler OnDeliveryFailed; 
 
     private void FixedUpdate()
     {
@@ -110,6 +111,7 @@ public class DeliveryManager: MonoBehaviour
                 return true;
             }
         }
+        OnDeliveryFailed?.Invoke(this, EventArgs.Empty);
         return false;
     }
 }

@@ -20,10 +20,12 @@ public abstract class BaseCounter : MonoBehaviour, IKitchenObjectParent
         if(_kitchenObject) _kitchenObject.SetParent(this);
     }
     
+    public static event EventHandler OnKitchenObjectParentChange;
 
     public void SetKitchenObject(KitchenObject kitchenObject)
     {
         _kitchenObject = kitchenObject;
+        if(_kitchenObject) OnKitchenObjectParentChange?.Invoke(this, null);
     }
 
     public bool HasKitchenObject()
