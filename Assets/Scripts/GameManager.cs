@@ -14,39 +14,58 @@ public class GameManager : MonoBehaviour
         GameOver
     }
     
-    private static GameManager _instance;
+    public event EventHandler OnStateChange;
     
-    public static event EventHandler OnStateChange;
-    public static event EventHandler OnInstanceChange;
-    
-    [ExecuteOnReload] private static void CleanUpEvents() 
-    {
-        OnStateChange = null;
-        OnInstanceChange = null;
-    }
-    public static GameManager Instance
-    {
-        get { return _instance; }
-        private set
-        {
-            _instance = value;
-            OnInstanceChange?.Invoke(null, null);
-        }
-    }
+    [SerializeField] private GameInput gameInput;
 
     private void Awake()
     {
-        Instance = this;
+        gameInput.OnPauseAction += GameInput_OnPauseAction;
     }
 
-    private void OnEnable()
+
+    private bool _isPaused = false;
+    public event EventHandler OnGamePaused;
+    public event EventHandler OnGameUnPaused;
+
+    private void GameInput_OnPauseAction(object sender, EventArgs e)
     {
-        Instance = this;
+        TogglePaused();
     }
-    
+
+    public bool TogglePaused()
+    {
+        Debug.Log("TogglePaused");
+        _isPaused = !_isPaused;
+        if (_isPaused)
+        {
+            OnGamePaused?.Invoke(this, null);
+            Time.timeScale = 0f;
+        }
+        else
+        {
+            OnGameUnPaused?.Invoke(this, null);
+            Time.timeScale = 1f;
+        }
+        return _isPaused;
+    }
+
     [SerializeField] private float waitingToStartTimer = 3f;
     [SerializeField] private float countDownTimer = 5f;
     [SerializeField] private float gameOverTimer = 10f;
+
+    public float GameTimeNormalized()
+    {
+        switch (CurrentState)
+        {
+            case State.Playing:
+                return _currentStatetimer / gameOverTimer;
+            case State.GameOver:
+                return 1f;
+        }
+        return 0f;
+    }
+    
     private State _currentState = State.WaitingToStart;
     public State CurrentState
     {

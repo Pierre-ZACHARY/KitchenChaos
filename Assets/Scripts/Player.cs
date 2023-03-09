@@ -7,31 +7,6 @@ using UnityEngine.Serialization;
 [RequireComponent(typeof(Transform))]
 public class Player : MonoBehaviour, IKitchenObjectParent
 {
-    [ClearOnReload]
-    private static Player _instance;
-    public static event EventHandler OnInstanceChange;
-    [ExecuteOnReload]
-    private static void CleanUpEvents() 
-    {
-        OnInstanceChange = null;
-    }
-    //Singleton
-    public static Player Instance
-    {
-        get => _instance;
-        private set
-        {
-            _instance = value;
-            OnInstanceChange?.Invoke(_instance, EventArgs.Empty);
-        }
-    }
-
-    void Awake()
-    {
-        Instance = this;
-    }
-    
-
     public class OnLastSelectedCounterChangeArgs : EventArgs
     {
         public BaseCounter selectedCounter;
@@ -51,32 +26,25 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         lastSelectedCounter = counter;
         OnLastSelectedCounterChange?.Invoke(this, new OnLastSelectedCounterChangeArgs() { selectedCounter = counter });
     }
-    
-    void OnEnable()
-    {
-        Instance = this;
-        gameInput.OnInteractAction += GameInput_OnInteractAction;
-        gameInput.OnInteractAlternativeAction += GameInput_OnInteractAlternativeAction;
-    }
-
-    void OnDisable()
-    {
-        gameInput.OnInteractAction -= GameInput_OnInteractAction;
-        gameInput.OnInteractAlternativeAction -= GameInput_OnInteractAlternativeAction;
-    }
 
     private void GameInput_OnInteractAlternativeAction(object sender, EventArgs e)
     {
-        if(GameManager.Instance.CurrentState != GameManager.State.Playing) return;
+        if(gameManager.CurrentState != GameManager.State.Playing) return;
         Debug.Log("Interact Alternative : " + lastSelectedCounter);
         lastSelectedCounter?.InteractAlternative(this);
     }
 
     private void GameInput_OnInteractAction(object sender, EventArgs e)
     {
-        if(GameManager.Instance.CurrentState != GameManager.State.Playing) return;
+        if(gameManager.CurrentState != GameManager.State.Playing) return;
         Debug.Log("Interact : " + lastSelectedCounter);
         lastSelectedCounter?.Interact(this);
+    }
+
+    private void Start()
+    {
+        gameInput.OnInteractAction += GameInput_OnInteractAction;
+        gameInput.OnInteractAlternativeAction += GameInput_OnInteractAlternativeAction;
     }
 
     // Update is called once per frame
@@ -148,6 +116,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     [SerializeField] private Transform _kitchenObjectSpawnTarget;
     private KitchenObject _kitchenObject;
+    [SerializeField] private GameManager gameManager;
 
     public KitchenObject GetKitchenObject()
     {

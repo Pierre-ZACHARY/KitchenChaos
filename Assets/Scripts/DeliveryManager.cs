@@ -14,38 +14,11 @@ public class DeliveryManager: MonoBehaviour
     {
         public List<SO_DeliveryRecipe> Recipes;
     }
-
-    private static DeliveryManager _instance;
-    public static DeliveryManager Instance
-    {
-        get { return _instance; }
-        set
-        {
-            _instance = value;
-            OnDeliveryManagerInstanceChange?.Invoke(null, null);
-        }
-    }
     
-    public static event EventHandler OnDeliveryManagerInstanceChange;
-    
-    [ExecuteOnReload]
-    private static void OnReload()
-    {
-        OnDeliveryManagerInstanceChange = null;
-    }
-    
-    private void Awake()
-    {
-        Instance = this;
-    }
-
-    private void OnEnable()
-    {
-        Instance = this;
-    }
     
     [SerializeField] private float newRecipeMaxTime  = 8.0f;
     [SerializeField] private int maxRecipes = 3;
+    private int successfulDeliveries = 0;
     private float _newRecipeTimer = 0f;
     [SerializeField] private SO_DeliveryRecipesList recipesList;
     private List<SO_DeliveryRecipe> _currentRecipes = new List<SO_DeliveryRecipe>();
@@ -97,6 +70,7 @@ public class DeliveryManager: MonoBehaviour
             {
                 // there is one recipes that match the plate
                 // remove this recipe from the list
+                successfulDeliveries++;
                 _currentRecipes.Remove(recipe);
                 OnRecipesChanged?.Invoke(this, new OnRecipesChangedEventArgs
                 {
@@ -113,5 +87,10 @@ public class DeliveryManager: MonoBehaviour
         }
         OnDeliveryFailed?.Invoke(this, EventArgs.Empty);
         return false;
+    }
+    
+    public int GetSuccessfulDeliveries()
+    {
+        return successfulDeliveries;
     }
 }

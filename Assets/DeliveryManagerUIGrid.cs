@@ -6,34 +6,12 @@ using UnityEngine.UI;
 
 public class DeliveryManagerUIGrid : MonoBehaviour
 {
-    #region EventSubscriptions
+    [SerializeField] private DeliveryManager deliveryManager;
     private void Start()
     {
-        DeliveryManager.OnDeliveryManagerInstanceChange += DeliveryManager_OnDeliveryManagerInstanceChange;
-        DeliveryManager.Instance.OnRecipesChanged += DeliveryManager_OnRecipesChanged;
+        deliveryManager.OnRecipesChanged += DeliveryManager_OnRecipesChanged;
     }
 
-    private void OnEnable()
-    {
-        DeliveryManager.OnDeliveryManagerInstanceChange += DeliveryManager_OnDeliveryManagerInstanceChange;
-        if(DeliveryManager.Instance) DeliveryManager.Instance.OnRecipesChanged += DeliveryManager_OnRecipesChanged;
-    }
-
-    private void OnDisable()
-    {
-        DeliveryManager.OnDeliveryManagerInstanceChange -= DeliveryManager_OnDeliveryManagerInstanceChange;
-        DeliveryManager.Instance.OnRecipesChanged -= DeliveryManager_OnRecipesChanged;
-    }
-
-    
-
-    private void DeliveryManager_OnDeliveryManagerInstanceChange(object sender, EventArgs e)
-    {
-        // new instance of DeliveryManager
-        DeliveryManager.Instance.OnRecipesChanged += DeliveryManager_OnRecipesChanged;
-    }
-    
-    #endregion
 
     [SerializeField] private Transform panelTemplate;
     [SerializeField] private GridLayoutGroup gridUI;
