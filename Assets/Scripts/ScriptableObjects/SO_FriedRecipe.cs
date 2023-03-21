@@ -8,4 +8,5 @@ public class SO_FriedRecipe : ScriptableObject
     public SO_KitchenObjects input;
     public SO_KitchenObjects output;
     public float cookingTime;
+    public bool hasWarning = false;
 }

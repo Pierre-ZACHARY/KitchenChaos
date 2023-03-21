@@ -19,6 +19,16 @@ public class StoveCounter : BaseCounter, IHasProgress
     {
         Idle, Cooking, Done
     }
+
+    public bool IsAboutToBurn()
+    {
+        if(currentRecipe.hasWarning)
+        {
+            return _cookingTimer > currentRecipe.cookingTime*0.3f;
+        }
+        else return false;
+    }
+    
     
     private State _state;
     private void SetState(State state)

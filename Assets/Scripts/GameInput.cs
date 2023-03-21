@@ -15,7 +15,10 @@ public class GameInput : MonoBehaviour
         InteractAlternative,
         MoveLeft,
         Pause,
-        MoveRight
+        MoveRight,
+        Gamepad_Interact,
+        Gamepad_InteractAlternative,
+        Gamepad_Pause,
 
     }
 
@@ -25,6 +28,17 @@ public class GameInput : MonoBehaviour
         public InputAction action;
         public int index;
         public String displayName;
+    }
+    
+    
+    public String GetKeyBinding(Bindings binding)
+    {
+        InputActionIndex actionIndex = GetActionIndex(binding);
+        InputControl control = InputSystem.FindControl(actionIndex.action.bindings[actionIndex.index].overridePath ?? actionIndex.action.bindings[actionIndex.index].path);
+        if(control != null)
+            return control.displayName;
+        else
+            return actionIndex.action.bindings[actionIndex.index].ToDisplayString();
     }
 
     public InputActionIndex GetActionIndex(Bindings bindings)
@@ -45,6 +59,12 @@ public class GameInput : MonoBehaviour
                 return new InputActionIndex() {binding = bindings, action = _playerInputActions.Player.Move, index = 3, displayName = "Move Left"};
             case Bindings.MoveRight:
                 return new InputActionIndex() {binding = bindings, action = _playerInputActions.Player.Move, index = 4, displayName = "Move Right"};
+            case Bindings.Gamepad_Interact:
+                return new InputActionIndex() {binding = bindings, action = _playerInputActions.Player.Interact, index = 1, displayName = "Gamepad Interact"};
+            case Bindings.Gamepad_InteractAlternative:
+                return new InputActionIndex() {binding = bindings, action = _playerInputActions.Player.InteractAlternative, index = 1, displayName = "Gamepad Interact Alt"};
+            case Bindings.Gamepad_Pause:
+                return new InputActionIndex() {binding = bindings, action = _playerInputActions.Player.Pause, index = 1, displayName = "Gamepad Pause"};
         }
         return null;
     }
@@ -59,6 +79,7 @@ public class GameInput : MonoBehaviour
             _playerInputActions.Player.Enable();
             PlayerPrefs.SetString(_playerInputJsonKey, _playerInputActions.SaveBindingOverridesAsJson());
             PlayerPrefs.Save();
+            OnKeyRebound?.Invoke(this, EventArgs.Empty);
             onRebound?.Invoke();
             
         }).Start();
@@ -70,6 +91,7 @@ public class GameInput : MonoBehaviour
     public event EventHandler OnInteractAlternativeAction;
     
     public event EventHandler OnPauseAction;
+    public event EventHandler OnKeyRebound;
 
     private void Awake()
     {

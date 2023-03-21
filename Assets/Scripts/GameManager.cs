@@ -21,6 +21,15 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         gameInput.OnPauseAction += GameInput_OnPauseAction;
+        gameInput.OnInteractAction += GameInput_OnInteractAction;
+    }
+
+    private void GameInput_OnInteractAction(object sender, EventArgs e)
+    {
+        if (CurrentState == State.WaitingToStart)
+        {
+            CurrentState = State.CountDownToStart;
+        }
     }
 
 
@@ -50,7 +59,6 @@ public class GameManager : MonoBehaviour
         return _isPaused;
     }
 
-    [SerializeField] private float waitingToStartTimer = 3f;
     [SerializeField] private float countDownTimer = 5f;
     [SerializeField] private float gameOverTimer = 10f;
 
@@ -89,9 +97,6 @@ public class GameManager : MonoBehaviour
         switch (CurrentState)
         {
             case State.WaitingToStart:
-                _currentStatetimer += Time.deltaTime;
-                if (_currentStatetimer >= waitingToStartTimer)
-                    CurrentState = State.CountDownToStart;
                 break;
             case State.CountDownToStart:
                 _currentStatetimer += Time.deltaTime;

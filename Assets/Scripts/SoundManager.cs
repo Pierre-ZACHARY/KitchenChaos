@@ -26,9 +26,9 @@ public class SoundManager : MonoBehaviour
 
     private void Start()
     {
-        deliveryManager.OnRecipeDelivered -= OnRecipeDelivered;
-        deliveryManager.OnDeliveryFailed -= OnDeliveryFailed;
-        player.OnPickupKitchenObject -= OnPickupKitchenObject;
+        deliveryManager.OnRecipeDelivered += OnRecipeDelivered;
+        deliveryManager.OnDeliveryFailed += OnDeliveryFailed;
+        player.OnPickupKitchenObject += OnPickupKitchenObject;
     }
 
     private void OnEnable()
@@ -51,6 +51,16 @@ public class SoundManager : MonoBehaviour
     private void OnDeliveryFailed(object sender, EventArgs e)
     {
         PlaySound(audioClipRefs.deliveryFail, deliveryCounter.transform.position);
+    }
+    
+    public void PlayCountdownSound()
+    {
+        PlaySound(audioClipRefs.warning[0], player.transform.position);
+    }
+    
+    public void PlayWarningSound(Vector3 position)
+    {
+        PlaySound(audioClipRefs.warning[1], position);
     }
 
     private void OnRecipeDelivered(object sender, DeliveryManager.OnRecipeDeliveredEventArgs e)

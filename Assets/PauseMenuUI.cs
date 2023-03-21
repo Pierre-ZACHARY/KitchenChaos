@@ -30,17 +30,28 @@ public class PauseMenuUI : MonoBehaviour
     private void OnOptionButtonClicked()
     {
         optionMenuUI.Show();
+        gameObject.SetActive(false);
     }
 
-    private void OnGameUnPaused(object sender, EventArgs e)
+    public void Show()
+    {
+        gameObject.SetActive(true);
+        resumeButton.Select();
+    }
+
+    public void Hide()
     {
         gameObject.SetActive(false);
+    }
+    private void OnGameUnPaused(object sender, EventArgs e)
+    {
+        Hide();
     }
 
     private void OnGamePaused(object sender, EventArgs e)
     {
         Debug.Log("Game Paused");
-        gameObject.SetActive(true);
+        Show();
     }
 
     private void OnQuitButtonClicked()

@@ -13,6 +13,7 @@ public class OptionMenuUI : MonoBehaviour
     [SerializeField] private Slider musicSlider;
     [SerializeField] private Slider soundSlider;
     [SerializeField] private Button closeButton;
+    [SerializeField] private PauseMenuUI pauseMenuUI;
 
     private void Start()
     {
@@ -29,11 +30,13 @@ public class OptionMenuUI : MonoBehaviour
     private void OnCloseButtonClicked()
     {
         Hide();
+        pauseMenuUI.Show();
     }
 
     public void Show()
     {
         gameObject.SetActive(true);
+        soundSlider.Select();
     }
     
     public void Hide()

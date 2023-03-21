@@ -15,3 +15,4 @@ MonoBehaviour:
   input: {fileID: 11400000, guid: d47891ffc7e532b478b2d5abd6209b38, type: 2}
   output: {fileID: 11400000, guid: 3a6803e3843a2a5438a96cc54d3c43a5, type: 2}
   cookingTime: 5
+  hasWarning: 1

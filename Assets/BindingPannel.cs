@@ -16,20 +16,15 @@ public class BindingPannel : MonoBehaviour
 
     public void Init(GameInput.Bindings bindings)
     {
-        GameInput.InputActionIndex actionIndex = gameInput.GetActionIndex(bindings);
-        label.text = actionIndex.displayName;
-        InputControl control = InputSystem.FindControl(actionIndex.action.bindings[actionIndex.index].overridePath ?? actionIndex.action.bindings[actionIndex.index].path);
-        buttonText.text = control.displayName ?? actionIndex.action.bindings[actionIndex.index].ToDisplayString();
+        buttonText.text = gameInput.GetKeyBinding(bindings);
+        label.text = gameInput.GetActionIndex(bindings).displayName;
         button.onClick.AddListener(() =>
         {
             buttonText.text = "...";
             gameInput.RebindBinding(bindings,
                 () =>
                 {
-                    actionIndex = gameInput.GetActionIndex(bindings);
-                    control = InputSystem.FindControl(actionIndex.action.bindings[actionIndex.index].overridePath ?? actionIndex.action.bindings[actionIndex.index].path);
-                    buttonText.text = control.displayName ?? actionIndex.action.bindings[actionIndex.index].ToDisplayString();
-
+                    buttonText.text = gameInput.GetKeyBinding(bindings);
                 });
         });
     }

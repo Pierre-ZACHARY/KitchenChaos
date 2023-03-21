@@ -21,7 +21,7 @@ public class MainMenuUI : MonoBehaviour
         loadingScreen.SetActive(false);
         playButton.onClick.AddListener(OnPlayButtonClicked);
         quitButton.onClick.AddListener(OnQuitButtonClicked);
-    }
+        }
 
     private void OnPlayButtonClicked()
     {

@@ -49,10 +49,10 @@ public class DeliveryManager: MonoBehaviour
         {
             // for this recipe, check if all KitchenObject on the plate are part of it
             var allKitchenObjectOnPlateArePartOfThisRecipe = true;
-            foreach (var kitchenObjectOnPlate in plateKitchenObject.GetObjectsOnPlate())
+            foreach (var kitchenObjectInRecipe in recipe.ingredients)
             {
                 var kitchenObjectOnPlateIsPartOfThisRecipe = false;
-                foreach (var kitchenObjectInRecipe in recipe.ingredients)
+                foreach (var kitchenObjectOnPlate in plateKitchenObject.GetObjectsOnPlate())
                 {
                     if (kitchenObjectOnPlate.associatedKitchenObject == kitchenObjectInRecipe)
                     {

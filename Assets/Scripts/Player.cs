@@ -91,14 +91,14 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         {
             // Attempt to moove only on the X axis
             Vector3 moveDirX = new Vector3(mooveDirection.x, 0, 0).normalized;
-            canMove = moveDirX.x != 0 &&!Physics.CapsuleCast(position, position + Vector3.up * playerHeight, playerSize, moveDirX,
+            canMove = Math.Abs(moveDirX.x) > 0.5f &&!Physics.CapsuleCast(position, position + Vector3.up * playerHeight, playerSize, moveDirX,
                 Time.deltaTime * mooveSpeed);
             if (canMove) mooveDirection = moveDirX;
             else
             {
                 // Attempt to moove only on the Z axis
                 Vector3 moveDirZ = new Vector3(0, 0, mooveDirection.z).normalized;
-                canMove = moveDirZ.z != 0 && !Physics.CapsuleCast(position, position + Vector3.up * playerHeight, playerSize, moveDirZ,
+                canMove = Math.Abs(moveDirZ.z) > 0.5f && !Physics.CapsuleCast(position, position + Vector3.up * playerHeight, playerSize, moveDirZ,
                     Time.deltaTime * mooveSpeed);
                 if (canMove) mooveDirection = moveDirZ;
             }
