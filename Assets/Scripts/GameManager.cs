@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviour
     }
 
     [SerializeField] private float countDownTimer = 5f;
-    [SerializeField] private float gameOverTimer = 10f;
+    [SerializeField] private float gameOverTimer = 40f;
 
     public float GameTimeNormalized()
     {
